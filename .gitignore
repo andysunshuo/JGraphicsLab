@@ -1,68 +1,85 @@
-# Prerequisites
-*.d
 
-# Compiled Object files
-*.slo
-*.lo
+# ==========================================
+# JGraphicsLab - Git Ignore
+# ==========================================
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+
+# Build directories
+out/
+build/
+Build/
+build-*/
+cmake-build-*/
+Debug/
+Release/
+x64/
+x86/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+# Compiled object files
 *.o
 *.obj
-
-# Precompiled Headers
-*.gch
+*.lo
+*.slo
 *.pch
+*.gch
 
 # Linker files
 *.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-*.so.*
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
 *.lib
+*.a
+*.la
+*.lai
+*.exp
+
+# Debugger files
+*.pdb
+*.idb
+*.dwo
 
 # Executables
 *.exe
 *.out
 *.app
 
-# Build directories
-build/
-Build/
-build-*/
-
-# CMake generated files
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-install_manifest.txt
-compile_commands.json
+# Dynamic libraries
+*.dll
+*.so
+*.so.*
+*.dylib
 
 # Temporary files
 *.tmp
 *.log
 *.bak
 *.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+Desktop.ini
 
 # vcpkg
 vcpkg_installed/
 
-# debug information files
-*.dwo
-
-# test output & cache
+# Test outputs
 Testing/
 .cache/
+# Visual Studio
+/.vs/
+
+# CMake build
+/out/
