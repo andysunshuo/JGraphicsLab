@@ -78,7 +78,8 @@ Computer Graphics from Scratch in C++ — 100 Hands-on Exercises
 - [ ] **HW73 — Mesh Simplification**：通过边折叠减少三角形数量，观察模型细节损失。
 - [ ] **HW74 — Quadric Error Metrics**：使用 QEM 评价边折叠误差，实现基于误差的网格简化。
 - [ ] **HW75 — Geometry Integration**：整合曲线、曲面、网格细分及简化，制作 Geometry Processor。
-- [ ] **HW76 — Ray Representation**：定义 Ray 的 Origin、Direction 和参数方程，计算射线上任意点。
+
+- [ ] - [ ] **HW76 — Ray Representation**：定义 Ray 的 Origin、Direction 和参数方程，计算射线上任意点。
 - [ ] **HW77 — Primary Ray Generation**：根据相机位置、FOV 和图像尺寸，为每个像素生成 Primary Ray。
 - [ ] **HW78 — Ray-Sphere Intersection**：求解射线与球体的交点，返回最近的正参数交点。
 - [ ] **HW79 — Ray-Plane Intersection**：实现射线与无限平面的求交，处理平行及退化情况。
