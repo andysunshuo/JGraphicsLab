@@ -14,10 +14,13 @@ Computer Graphics from Scratch in C++ — 100 Hands-on Exercises
 - [ ] **HW09 — Triangle Rasterization**：计算三角形 Bounding Box，遍历并填充内部像素。
 - [ ] **HW10 — Barycentric Coordinates**：计算重心坐标 α、β、γ，验证三个权重之和为 1。
 - [ ] **HW11 — Color Interpolation**：给三个顶点设置 RGB 颜色，利用重心坐标实现平滑插值。
+- [ ] 
 - [ ] **HW12 — Depth Buffer**：为每个像素存储深度，实现重叠三角形的遮挡关系。
 - [ ] **HW13 — Back-Face Culling**：通过三角形有向面积和顶点绕序实现背面剔除。
-- [ ] **HW14 — MSAA 2×2**：为每个像素设置四个采样点，独立处理覆盖、颜色、深度并进行 Resolve。
+- [ ] **HW14 — MSAA 2×2**：为每个像素设置四个采样点，独立处理覆盖、颜色、深度并进行 Resolve。  思考MSAA的trade off
 - [ ] **HW15 — Rasterizer Integration**：使用顶点数组和三角形索引绘制多个图元，检查共享边与绘制顺序。
+- [ ] --HW17（扩展）—— MSAA + Color Interpolation Triangle
+- [ ] 
 - [ ] **HW16 — Vec2**：定义二维向量，实现加法、减法、数乘、长度和归一化。
 - [ ] **HW17 — Vec3**：实现三维向量的 Dot Product、Cross Product、Length 和 Normalize。
 - [ ] **HW18 — Vec4**：实现四维向量，理解齐次坐标中 Position 与 Direction 的区别。
@@ -34,6 +37,7 @@ Computer Graphics from Scratch in C++ — 100 Hands-on Exercises
 - [ ] **HW29 — MVP Pipeline**：组合 Model、View、Projection，绘制可以旋转的三维线框立方体。
 - [ ] **HW30 — Frustum Clipping**：在齐次裁剪空间中裁剪三角形，正确处理近裁剪面和透视除法。
 - [ ] **HW31 — 3D Triangle Rasterization**：将三维立方体的三角面投影到屏幕，填充颜色并实现深度遮挡。
+- [ ] 
 - [ ] **HW32 — Aliasing**：绘制高频图案、斜线和重复纹理，观察锯齿与摩尔纹。
 - [ ] **HW33 — Signal Sampling**：生成周期信号，比较不同采样频率的结果，理解 Nyquist Sampling。
 - [ ] **HW34 — Image Filtering**：实现二维卷积和低通滤波，对比直接降采样与滤波后降采样。
@@ -58,6 +62,7 @@ Computer Graphics from Scratch in C++ — 100 Hands-on Exercises
 - [ ] **HW53 — Displacement Mapping**：根据高度图移动几何顶点，对比真实位移与 Bump Mapping。
 - [ ] **HW54 — Environment Mapping**：根据视线和表面反射方向采样环境纹理，实现基础环境反射。
 - [ ] **HW55 — Final Software Rasterizer**：整合 MVP、Clipping、Z-Buffer、MSAA、纹理采样与 Blinn-Phong，渲染完整的可旋转三维模型。
+- [ ] 
 - [ ] **HW56 — Implicit Geometry**：使用隐式方程表示圆、球体及其他基础几何体，判断点与表面的空间关系。
 - [ ] **HW57 — Signed Distance Function**：实现球体和盒子的 SDF，计算空间点到表面的有符号距离。
 - [ ] **HW58 — Constructive Solid Geometry**：使用 Union、Intersection、Difference 组合隐式几何体。

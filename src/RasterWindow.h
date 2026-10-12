@@ -15,4 +15,10 @@ namespace Raster
     void Clear(Color color);
 
     void PutPixel(int x, int y, Color color);
+
+
+    int GetR(Raster::Color color);
+    int GetG(Raster::Color color);
+    int GetB(Raster::Color color);
+
 }

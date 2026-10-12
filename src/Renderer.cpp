@@ -129,6 +129,16 @@ struct Barycentric
 // 你可以直接在 RenderScene() 中使用。
 // ============================================================
 
+
+Raster::Color msaaBuffer
+[
+    Raster::HEIGHT
+]
+[
+    Raster::WIDTH
+]
+[4];
+
 // 基础颜色
 const Raster::Color black = Raster::MakeColor(0, 0, 0);
 const Raster::Color white = Raster::MakeColor(255, 255, 255);
@@ -703,7 +713,17 @@ float EdgeFunction(
     Point2 p)
 {
     // TODO：自己实现
-    return 0.0f;
+    // 计算向量 AB
+    float ab_x = b.x - a.x;
+    float ab_y = b.y - a.y;
+
+    // 计算向量 AP
+    float ap_x = p.x - a.x;
+    float ap_y = p.y - a.y;
+
+    // 二维叉乘
+    // AB × AP
+    return ab_x * ap_y - ab_y * ap_x;
 }
 
 
@@ -747,8 +767,32 @@ bool IsInsideTriangle(
     const Triangle& triangle,
     Point2 p)
 {
-    // TODO：自己实现
-    return false;
+    // 1. 获取三角形三个顶点
+    Point2 a = triangle.a;
+    Point2 b = triangle.b;
+    Point2 c = triangle.c;
+
+    // 2. 计算点 P 相对于三条有向边的位置
+    float e0 = EdgeFunction(a, b, p);
+    float e1 = EdgeFunction(b, c, p);
+    float e2 = EdgeFunction(c, a, p);
+
+    // 3. 判断是否全部非负（逆时针三角形）
+    bool allPositive = (e0 >= 0 && e1 >= 0 && e2 >= 0);
+
+    // 4. 判断是否全部非正（顺时针三角形）
+    bool allNegative = (e0 <= 0 && e1 <= 0 && e2 <= 0);
+
+    // 5. 排除三个顶点共线的退化三角形
+    float area = EdgeFunction(a, b, c);
+
+    if (area == 0.0f)
+    {
+        return false;
+    }
+
+    // 6. 三个叉乘结果同号，则点在三角形内部或边界
+    return allPositive || allNegative;
 }
 
 
@@ -784,7 +828,45 @@ void FillTriangle(
     const Triangle& triangle,
     Raster::Color color)
 {
-    // TODO：自己实现
+    // 1. 获取三个顶点
+    Point2 a = triangle.a;
+    Point2 b = triangle.b;
+    Point2 c = triangle.c;
+
+    // 2. 计算 X 坐标的最小值和最大值
+    float minX = std::min({ a.x, b.x, c.x });
+    float maxX = std::max({ a.x, b.x, c.x });
+
+    // 3. 计算 Y 坐标的最小值和最大值
+    float minY = std::min({ a.y, b.y, c.y });
+    float maxY = std::max({ a.y, b.y, c.y });
+
+    // 4. 将浮点坐标转换为整数像素范围
+    int xStart = static_cast<int>(std::floor(minX));
+    int xEnd = static_cast<int>(std::ceil(maxX));
+
+    int yStart = static_cast<int>(std::floor(minY));
+    int yEnd = static_cast<int>(std::ceil(maxY));
+
+    // 5. 遍历 Bounding Box 内的所有像素
+    for (int y = yStart; y <= yEnd; ++y)
+    {
+        for (int x = xStart; x <= xEnd; ++x)
+        {
+            // 6. 取像素中心作为采样点
+            Point2 p{
+                x + 0.5f,
+                y + 0.5f
+            };
+
+            // 7. 判断像素中心是否在三角形内部
+            if (IsInsideTriangle(triangle, p))
+            {
+                // 8. 填充像素颜色
+                Raster::PutPixel(x, y, color);
+            }
+        }
+    }
 }
 
 
@@ -832,9 +914,43 @@ bool ComputeBarycentric(
     Barycentric& result)
 {
     // TODO：自己实现
-    return false;
-}
+    Point2 A = triangle.a;
+    Point2 B = triangle.b;
+    Point2 C = triangle.c;
 
+    float area = EdgeFunction(A, B, C);
+
+    if (area == 0) return false;
+
+    // PBC 对应 alpha
+    result.alpha = EdgeFunction(B, C, p) / area;
+
+
+    // PCA 对应 beta
+    result.beta = EdgeFunction(C, A, p) / area;
+
+
+    // PAB 对应 gamma
+    result.gamma = EdgeFunction(A, B, p) / area;
+    return true;
+}
+float Clamp(
+    float value,
+    float minValue,
+    float maxValue)
+{
+    if (value < minValue)
+    {
+        return minValue;
+    }
+
+    if (value > maxValue)
+    {
+        return maxValue;
+    }
+
+    return value;
+}
 
 // ============================================================
 // HW11 — Color Interpolation
@@ -879,11 +995,124 @@ Raster::Color InterpolateColor(
     const Color3& b,
     const Color3& c)
 {
-    // TODO：自己实现
-    return black;
+    // RGB 插值
+
+    float r =
+        bary.alpha * a.r +
+        bary.beta * b.r +
+        bary.gamma * c.r;
+
+
+    float g =
+        bary.alpha * a.g +
+        bary.beta * b.g +
+        bary.gamma * c.g;
+
+
+    float bValue =
+        bary.alpha * a.b +
+        bary.beta * b.b +
+        bary.gamma * c.b;
+
+
+    // 限制颜色范围
+    r = Clamp(r, 0.0f, 255.0f);
+    g = Clamp(g, 0.0f, 255.0f);
+    bValue = Clamp(bValue, 0.0f, 255.0f);
+
+
+    // 转换成最终 framebuffer 使用的颜色
+    return Raster::MakeColor(
+        static_cast<int>(r),
+        static_cast<int>(g),
+        static_cast<int>(bValue)
+    );
 }
+// ============================================================
+// HW11 Extended — Triangle Color Interpolation
+// 三角形顶点颜色插值绘制
+// ============================================================
+//
+// 功能：
+// 给三角形三个顶点指定颜色，自动完成内部像素颜色插值。
+//
+// 参数：
+// triangle : 三角形。
+// colorA   : 顶点A颜色。
+// colorB   : 顶点B颜色。
+// colorC   : 顶点C颜色。
+//
+// 原理：
+// 1. 判断像素是否在三角形内部。
+// 2. 计算该像素重心坐标。
+// 3. 根据 alpha beta gamma 插值颜色。
+// 4. 写入 framebuffer。
+//
 
 
+void FillTriangleColorInterpolation(
+    const Triangle& triangle,
+    const Color3& colorA,
+    const Color3& colorB,
+    const Color3& colorC)
+{
+
+    // 为什么这里遍历整个屏幕而不是包围盒了呢？
+    // 遍历整个屏幕
+
+    for (int y = 0; y < Raster::HEIGHT; y++)
+    {
+        for (int x = 0; x < Raster::WIDTH; x++)
+        {
+
+            // 像素中心
+            Point2 p =
+            {
+                x + 0.5f,
+                y + 0.5f
+            };
+
+
+            // 判断像素是否属于三角形
+            if (IsInsideTriangle(
+                triangle,
+                p))
+            {
+
+                Barycentric bary;
+
+
+                // 计算重心坐标
+                bool success =
+                    ComputeBarycentric(
+                        triangle,
+                        p,
+                        bary);
+
+
+                if (success)
+                {
+
+                    // 根据三个顶点颜色插值
+                    Raster::Color color =
+                        InterpolateColor(
+                            bary,
+                            colorA,
+                            colorB,
+                            colorC);
+
+
+
+                    // 写入像素
+                    Raster::PutPixel(
+                        x,
+                        y,
+                        color);
+                }
+            }
+        }
+    }
+}
 // ============================================================
 // HW12 — Depth Buffer
 // 深度缓冲
@@ -911,7 +1140,13 @@ float depthBuffer[Raster::HEIGHT][Raster::WIDTH] = {};
 // 应该将深度缓冲初始化为什么值？
 void ClearDepthBuffer()
 {
-    // TODO：自己实现
+    for (int y = 0; y < Raster::HEIGHT; y++)
+    {
+        for (int x = 0; x < Raster::WIDTH; x++)
+        {
+            depthBuffer[y][x] = 1.0f;
+        }
+    }
 }
 
 
@@ -934,9 +1169,27 @@ void ClearDepthBuffer()
 // 1. 怎样访问 depthBuffer[y][x]？
 // 2. 比较成功后是否需要更新深度值？
 // 3. 同一个像素多次绘制，如何保持正确遮挡？
-bool DepthTest(int x, int y, float depth)
+bool DepthTest(
+    int x,
+    int y,
+    float depth)
 {
-    // TODO：自己实现
+    // 越界检查
+    if (x < 0 || x >= Raster::WIDTH ||
+        y < 0 || y >= Raster::HEIGHT)
+    {
+        return false;
+    }
+
+
+    // 新深度更近
+    if (depth < depthBuffer[y][x])
+    {
+        depthBuffer[y][x] = depth;
+        return true;
+    }
+
+
     return false;
 }
 
@@ -967,10 +1220,25 @@ bool DepthTest(int x, int y, float depth)
 // 1. 为什么有向面积能够判断绕序？
 // 2. 顶点顺序反转后会发生什么？
 // 3. 背面剔除为什么能够减少光栅化工作量？
-bool IsFrontFacing(const Triangle& triangle)
+bool IsFrontFacing(
+    const Triangle& triangle)
 {
-    // TODO：自己实现
-    return false;
+    float area =
+        EdgeFunction(
+            triangle.a,
+            triangle.b,
+            triangle.c);
+
+
+    // 退化三角形
+    if (area == 0.0f)
+    {
+        return false;
+    }
+
+
+    // CCW 正面
+    return area > 0;
 }
 
 
@@ -1004,13 +1272,50 @@ bool IsFrontFacing(const Triangle& triangle)
 //
 // 思考：
 // 为什么只在像素中心采样会产生锯齿？
+
 void RasterizeTriangleMSAA(
     const Triangle& triangle,
     Raster::Color color)
 {
-    // TODO：自己实现
-}
 
+    for (int y = 0; y < Raster::HEIGHT; y++)
+    {
+        for (int x = 0; x < Raster::WIDTH; x++)
+        {
+
+            Point2 samples[4] =
+            {
+                {x + 0.25f,y + 0.25f},
+                {x + 0.75f,y + 0.25f},
+                {x + 0.25f,y + 0.75f},
+                {x + 0.75f,y + 0.75f}
+            };
+
+
+            for (int i = 0; i < 4; i++)
+            {
+
+                if (IsInsideTriangle(
+                    triangle,
+                    samples[i]))
+                {
+
+                    msaaBuffer[y][x][i]
+                        = color;
+
+                }
+                else
+                {
+
+                    msaaBuffer[y][x][i]
+                        = Raster::MakeColor(
+                            0, 0, 0);
+
+                }
+            }
+        }
+    }
+}
 
 // 功能：
 // 将一个像素内部的多个采样颜色合成为最终颜色。
@@ -1028,7 +1333,43 @@ void RasterizeTriangleMSAA(
 // 为什么不能直接对打包后的 uint32_t 颜色值求平均？
 void ResolveMSAA()
 {
-    // TODO：自己实现
+    for (int y = 0; y < Raster::HEIGHT; y++)
+    {
+        for (int x = 0; x < Raster::WIDTH; x++)
+        {
+
+            int r = 0;
+            int g = 0;
+            int b = 0;
+
+
+            // 四个采样点平均
+            for (int sample = 0; sample < 4; sample++)
+            {
+                Raster::Color color =
+                    msaaBuffer[y][x][sample];
+
+
+                r += Raster::GetR(color);
+                g += Raster::GetG(color);
+                b += Raster::GetB(color);
+            }
+
+
+            r /= 4;
+            g /= 4;
+            b /= 4;
+
+
+            Raster::PutPixel(
+                x,
+                y,
+                Raster::MakeColor(
+                    r,
+                    g,
+                    b));
+        }
+    }
 }
 
 
@@ -1069,7 +1410,32 @@ void DrawIndexedTriangles(
     const std::vector<int>& indices,
     Raster::Color color)
 {
-    // TODO：自己实现
+
+    for (size_t i = 0;
+        i + 2 < indices.size();
+        i += 3)
+    {
+
+        Triangle triangle;
+
+
+        triangle.a =
+            vertices[indices[i]];
+
+
+        triangle.b =
+            vertices[indices[i + 1]];
+
+
+        triangle.c =
+            vertices[indices[i + 2]];
+
+
+
+        FillTriangle(
+            triangle,
+            color);
+    }
 }
 
 
@@ -1222,22 +1588,21 @@ void RenderScene()
      // main 
 
     // question 为什么用 draw line1就画不出来呢？
-    DrawTriangleWireframe(testTriangle, red);
+    // DrawTriangleWireframe(testTriangle, red);
 
 
     // ========================================================
     // HW08：三角形内部判断
     // ========================================================
 
-    // bool inside = IsInsideTriangle(
-    //     testTriangle, insidePoint);
+    bool inside = IsInsideTriangle(
+        testTriangle, insidePoint);
 
 
     // ========================================================
     // HW09：实心三角形
     // ========================================================
 
-    // FillTriangle(testTriangle, green);
 
 
     // ========================================================
@@ -1249,11 +1614,10 @@ void RenderScene()
     //     testTriangle, insidePoint, result);
 
 
-    // ========================================================
-    // 后续 HW11~HW16：
-    //
-    // 根据对应函数注释，自行添加测试。
-    // 纯数学计算函数可以使用断点、assert
-    // 或控制台测试程序检查计算结果。
-    // ========================================================
+    // 颜色插值
+   // FillTriangleColorInterpolation(testTriangle,colorA,colorB,colorC);
+
+    FillTriangle(
+        testTriangle,
+        white);
 }
