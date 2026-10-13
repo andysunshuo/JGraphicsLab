@@ -1,0 +1,324 @@
+{
+  "models": [
+    {
+      "file": "Models/bunny.obj",
+      "vertices": 35132,
+      "triangles": 69451,
+      "uv_count": 35132,
+      "normal_count": 35132,
+      "contains_uv": true,
+      "contains_normal": true,
+      "source_vertices": 35947,
+      "referenced_source_vertices": 34834,
+      "source_member": "bunny/reconstruction/bun_zipper.ply",
+      "removed_degenerate_triangles": 0,
+      "original_center": [
+        -0.0168404,
+        0.1101542,
+        -0.0015369499999999987
+      ],
+      "normalization_scale": 12.845297657659975,
+      "bbox_min": [
+        -1.0,
+        -0.9912305152891157,
+        -0.7750422289160498
+      ],
+      "bbox_max": [
+        1.0,
+        0.9912305152891157,
+        0.7750422289160498
+      ]
+    },
+    {
+      "file": "Models/dragon.obj",
+      "vertices": 125307,
+      "triangles": 249882,
+      "uv_count": 125307,
+      "normal_count": 125307,
+      "contains_uv": true,
+      "contains_normal": true,
+      "source_vertices": 125066,
+      "referenced_source_vertices": 124943,
+      "source_member": "dragon.source.obj",
+      "removed_degenerate_triangles": 0,
+      "original_center": [
+        2.2415009999999995,
+        3.992891499999999,
+        9.859496999999998
+      ],
+      "normalization_scale": 0.009913799611515865,
+      "bbox_min": [
+        -1.0,
+        -0.44902365877716904,
+        -0.6653056440777999
+      ],
+      "bbox_max": [
+        1.0,
+        0.44902365877716904,
+        0.6653056440777999
+      ]
+    },
+    {
+      "file": "Models/teapot.obj",
+      "vertices": 3808,
+      "triangles": 6320,
+      "uv_count": 3808,
+      "normal_count": 3808,
+      "contains_uv": true,
+      "contains_normal": true,
+      "source_vertices": 3644,
+      "referenced_source_vertices": 3644,
+      "source_member": "teapot.source.obj",
+      "removed_degenerate_triangles": 0,
+      "original_center": [
+        0.21700000000000008,
+        1.575,
+        0.0
+      ],
+      "normalization_scale": 0.31084861672365555,
+      "bbox_min": [
+        -0.9999999999999999,
+        -0.48958657133975747,
+        -0.6216972334473111
+      ],
+      "bbox_max": [
+        0.9999999999999999,
+        0.48958657133975747,
+        0.6216972334473111
+      ]
+    },
+    {
+      "file": "Models/cube.obj",
+      "vertices": 24,
+      "triangles": 12,
+      "uv_count": 24,
+      "normal_count": 24,
+      "contains_uv": true,
+      "contains_normal": true,
+      "source_vertices": 8,
+      "referenced_source_vertices": 8,
+      "source_member": "cube.source.obj",
+      "removed_degenerate_triangles": 0,
+      "original_center": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "normalization_scale": 1.0,
+      "bbox_min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "bbox_max": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "images": [
+    {
+      "file": "Textures/brick_color.jpg",
+      "source_member": "Bricks052_1K-JPG_Color.jpg",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "file": "NormalMaps/brick_normal.jpg",
+      "source_member": "Bricks052_1K-JPG_NormalGL.jpg",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "file": "HeightMaps/brick_height.jpg",
+      "source_member": "Bricks052_1K-JPG_Displacement.jpg",
+      "width": 1024,
+      "height": 1024,
+      "mode": "L"
+    },
+    {
+      "file": "Textures/wood.jpg",
+      "source_member": "Wood051_1K-JPG_Color.jpg",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "file": "Textures/checker.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB"
+    }
+  ],
+  "files": [
+    {
+      "file": "Environment/studio_small_09.hdr",
+      "bytes": 1615248,
+      "sha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45"
+    },
+    {
+      "file": "HeightMaps/brick_height.jpg",
+      "bytes": 269978,
+      "sha256": "1e40e9be60d6c3fb4a41859d0dd08f42bf8ac05677b15a74e154042684b5cb10"
+    },
+    {
+      "file": "Models/bunny.obj",
+      "bytes": 7460681,
+      "sha256": "c6bcac0597264ea2e6d4b15f5ea7a25a7ac621b3f50a1febbf796e4d0228684f"
+    },
+    {
+      "file": "Models/cube.obj",
+      "bytes": 1144,
+      "sha256": "bce76dd957ad8bb4a45ec4f1922f1f93a76beb2cfeb79cd35fb2e1ab871cc959"
+    },
+    {
+      "file": "Models/dragon.obj",
+      "bytes": 27721782,
+      "sha256": "794c2c774d4adc627f592e57bf4e783f16978fd219ad52a2c0f422dfac835f22"
+    },
+    {
+      "file": "Models/teapot.obj",
+      "bytes": 682613,
+      "sha256": "765cc34467254957c6e36c38ddb6ab6174b5200683e1b2dd20076f9e65c9ef55"
+    },
+    {
+      "file": "NormalMaps/brick_normal.jpg",
+      "bytes": 1935906,
+      "sha256": "82bf53fa9d7b8902c88249b3802a6d9ae90bad20bca9fbb9df80771459544d40"
+    },
+    {
+      "file": "Textures/brick_color.jpg",
+      "bytes": 1456114,
+      "sha256": "f582cfe4017a7b95595c0562fb8bd5f28812d3f129379ac0077839331a7b340d"
+    },
+    {
+      "file": "Textures/checker.png",
+      "bytes": 1855,
+      "sha256": "7879766a3a6b1f3f3ad9f62aae797c1b7219d1260ee32223180fb5b05099e89e"
+    },
+    {
+      "file": "Textures/wood.jpg",
+      "bytes": 871537,
+      "sha256": "f3c6c5456457e8d05c1fee4d2f186f41d0aea2b8a06859b69ce2934e11aa8798"
+    }
+  ],
+  "asset_root": "D:\\github\\JGraphicsLab\\JRenderLab\\Assets",
+  "prepared_date": "2026-10-13",
+  "validation": {
+    "status": "passed",
+    "loaders": [
+      "tinyobjloader C++",
+      "stb_image C++"
+    ],
+    "output": "bunny: vertices=35132 triangles=69451 UV=yes normals=yes (all corners, finite values, unit normals, nondegenerate triangles)\ndragon: vertices=125307 triangles=249882 UV=yes normals=yes (all corners, finite values, unit normals, nondegenerate triangles)\nteapot: vertices=3808 triangles=6320 UV=yes normals=yes (all corners, finite values, unit normals, nondegenerate triangles)\ncube: vertices=24 triangles=12 UV=yes normals=yes (all corners, finite values, unit normals, nondegenerate triangles)\nTextures/checker.png: 512x512 channels=3 decoded OK\nTextures/brick_color.jpg: 1024x1024 channels=3 decoded OK\nTextures/wood.jpg: 1024x1024 channels=3 decoded OK\nNormalMaps/brick_normal.jpg: 1024x1024 channels=3 decoded OK\nHeightMaps/brick_height.jpg: 1024x1024 channels=1 decoded OK\nEnvironment/studio_small_09.hdr: 1024x512 RGB float max=524 (Radiance HDR, equirectangular 2:1, decoded OK)\n",
+    "compiler": "MSVC x64, C++20",
+    "renderer_integration": "Current JGraphicsLab source has no OBJ/PNG/JPG/HDR loader; asset formats validated independently."
+  },
+  "downloads": [
+    {
+      "name": "cube.source.obj",
+      "url": "https://raw.githubusercontent.com/tinyobjloader/tinyobjloader/release/models/cube.obj",
+      "downloaded_from": "https://cdn.jsdelivr.net/gh/tinyobjloader/tinyobjloader@release/models/cube.obj",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\cube.source.obj",
+      "bytes": 545,
+      "sha256": "373624ed4bdd59bfc6e8a569cdef5d952a2ca0db788113b01e60bee24bba79e0"
+    },
+    {
+      "name": "teapot.source.obj",
+      "url": "https://raw.githubusercontent.com/alecjacobson/common-3d-test-models/master/data/teapot.obj",
+      "downloaded_from": "https://cdn.jsdelivr.net/gh/alecjacobson/common-3d-test-models@master/data/teapot.obj",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\teapot.source.obj",
+      "bytes": 210614,
+      "sha256": "1b5396fedd74b577e32cef41146582c2f2e1a050d5b4915193c0ac1ad4187ed4"
+    },
+    {
+      "name": "checker.png",
+      "url": "https://threejs.org/manual/examples/resources/images/checker.png",
+      "downloaded_from": "https://threejs.org/manual/examples/resources/images/checker.png",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\checker.source.png",
+      "bytes": 71,
+      "sha256": "62c794f9c315873b214c8d08ae4062eede5e94e2a8ba1a559930aa6fd4ae62cd"
+    },
+    {
+      "name": "bunny.tar.gz",
+      "url": "https://graphics.stanford.edu/pub/3Dscanrep/bunny.tar.gz",
+      "downloaded_from": "https://graphics.stanford.edu/pub/3Dscanrep/bunny.tar.gz",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\bunny.tar.gz",
+      "bytes": 4894286,
+      "sha256": "a5720bd96d158df403d153381b8411a727a1d73cff2f33dc9b212d6f75455b84"
+    },
+    {
+      "name": "studio_small_09.hdr",
+      "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr",
+      "downloaded_from": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr",
+      "path": "D:\\github\\JGraphicsLab\\JRenderLab\\Assets\\Environment\\studio_small_09.hdr",
+      "bytes": 1615248,
+      "sha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45"
+    },
+    {
+      "name": "three-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/LICENSE",
+      "downloaded_from": "https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/LICENSE",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\three-LICENSE.txt",
+      "bytes": 1081,
+      "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc"
+    },
+    {
+      "name": "tinyobjloader-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/tinyobjloader/tinyobjloader/release/LICENSE",
+      "downloaded_from": "https://cdn.jsdelivr.net/gh/tinyobjloader/tinyobjloader@release/LICENSE",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\tinyobjloader-LICENSE.txt",
+      "bytes": 1902,
+      "sha256": "19e1b0242709694c6671369609544993a2dfcef8477f1aa19bd30de35ec58caa"
+    },
+    {
+      "name": "Wood051_1K-JPG.zip",
+      "url": "https://ambientcg.com/get?file=Wood051_1K-JPG.zip",
+      "downloaded_from": "https://ambientcg.com/get?file=Wood051_1K-JPG.zip",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\Wood051_1K-JPG.zip",
+      "bytes": 6712631,
+      "sha256": "debf3d60f69a09c30613dc95a94da49c8116160ab8a29f77ac8e32cc33f1a1c3"
+    },
+    {
+      "name": "stb_image.h",
+      "url": "https://raw.githubusercontent.com/nothings/stb/master/stb_image.h",
+      "downloaded_from": "https://cdn.jsdelivr.net/gh/nothings/stb@master/stb_image.h",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\stb_image.h",
+      "bytes": 283010,
+      "sha256": "594c2fe35d49488b4382dbfaec8f98366defca819d916ac95becf3e75f4200b3"
+    },
+    {
+      "name": "tiny_obj_loader.h",
+      "url": "https://raw.githubusercontent.com/tinyobjloader/tinyobjloader/release/tiny_obj_loader.h",
+      "downloaded_from": "https://cdn.jsdelivr.net/gh/tinyobjloader/tinyobjloader@release/tiny_obj_loader.h",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\tiny_obj_loader.h",
+      "bytes": 467021,
+      "sha256": "cffc9c8746541bd14a3ba877cd3c52cb7ccfe3779b1d5863f7d13f05d26f1ef8"
+    },
+    {
+      "name": "Bricks052_1K-JPG.zip",
+      "url": "https://ambientcg.com/get?file=Bricks052_1K-JPG.zip",
+      "downloaded_from": "https://ambientcg.com/get?file=Bricks052_1K-JPG.zip",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\Bricks052_1K-JPG.zip",
+      "bytes": 7927902,
+      "sha256": "1088024ae12acccc254b01185a5173fbfcbd6c91bd30f2b886c50931dfd890dd"
+    },
+    {
+      "name": "dragon.source.obj",
+      "url": "https://raw.githubusercontent.com/alecjacobson/common-3d-test-models/master/data/xyzrgb_dragon.obj",
+      "downloaded_from": "https://cdn.jsdelivr.net/gh/alecjacobson/common-3d-test-models@master/data/xyzrgb_dragon.obj",
+      "path": "D:\\github\\JGraphicsLab\\out\\assets_setup\\sources\\dragon.source.obj",
+      "bytes": 11817802,
+      "sha256": "5d7106b58f2ac0d017758480fe607c5b6bf7d6201d930d2dd1ba7022c4d281c0"
+    }
+  ],
+  "transformations": {
+    "models": "Centered bounding box; longest side 2. Triangle faces, positive aligned v/vt/vn indices. Area-weighted smooth normals and seam-aware spherical UV for curved models; hard-edge normals and per-face square UV for cube.",
+    "checker": "Downloaded three.js 2x2 grayscale checker (128/192), nearest-neighbor 16 pixels per cell and repeated to 512x512 RGB PNG; no lossy filtering.",
+    "brick_maps": "Unmodified matching ambientCG Bricks052 1K JPEG color, OpenGL (+Y) tangent normal, and grayscale displacement.",
+    "dragon": "Preprocessed XYZ RGB Dragon OBJ provided by common-3d-test-models. This is the Asian Dragon dataset, not dragon_vrip.ply."
+  }
+}

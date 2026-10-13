@@ -1,4 +1,14 @@
 # JGraphicsLab
+
+HW32～HW50 已全部补齐数学检查、中文注释与独立对照图。运行及逐章学习方法见 [HW32～HW50 学习指南](docs/HW32至HW50_学习指南.md)。窗口运行任意一章后，可按左右方向键切换这 19 章。
+
+本次 Debug/Release 五组验收均通过，全部数学检查 142 PASS、0 FAIL；结果与修改范围见 [HW32～HW50 验收记录](docs/HW32至HW50_验收记录.md)。
+
+浏览四个模型、颜色贴图、法线图、高度图和 HDR 环境，请看 [HW50_资源展示](docs/HW50_资源展示.md)。当前默认 `kActiveHomework = 50_3`；可改为 `50_2`～`50_10`，原 HW01～HW50 保留。
+
+第一次使用或想切换默认作业，请先看 [快速上手与作业调试](docs/快速上手与作业调试.md)。默认编号在 `src/Application/Config.h`；每章调用与数学说明已写在 `src/Homework/HWxx.cpp` 的注释中。
+
+模块化重构已完成，运行入口、HW 状态和目录结构见 [重构与使用](docs/重构与使用.md)，验证结果与模型耗时见 [验收记录](docs/验收记录.md)。原算法逐项位置见 [函数迁移](docs/函数迁移.md)。
 Computer Graphics from Scratch in C++ — 100 Hands-on Exercises
 
 > 
@@ -38,31 +48,33 @@ Computer Graphics from Scratch in C++ — 100 Hands-on Exercises
 - [ ] **HW30 — Frustum Clipping**：在齐次裁剪空间中裁剪三角形，正确处理近裁剪面和透视除法。
 - [ ] **HW31 — 3D Triangle Rasterization**：将三维立方体的三角面投影到屏幕，填充颜色并实现深度遮挡。
 - [ ] 
-- [ ] **HW32 — Aliasing**：绘制高频图案、斜线和重复纹理，观察锯齿与摩尔纹。
-- [ ] **HW33 — Signal Sampling**：生成周期信号，比较不同采样频率的结果，理解 Nyquist Sampling。
-- [ ] **HW34 — Image Filtering**：实现二维卷积和低通滤波，对比直接降采样与滤波后降采样。
-- [ ] **HW35 — SSAA**：以更高分辨率渲染图像，再进行过滤和降采样。
-- [ ] **HW36 — MSAA Improvement**：将多重采样应用于三维光栅化场景，处理深度、覆盖与颜色。
-- [ ] **HW37 — Rasterization Rules**：实现 Top-Left Rule，处理退化三角形、共享边和像素中心采样规则。
-- [ ] **HW38 — Surface Normal**：根据三角形顶点计算面法线，并根据邻接面计算顶点法线。
-- [ ] **HW39 — Lambert Lighting**：实现 Ambient 与 Diffuse，利用法线和光照方向计算亮度。
-- [ ] **HW40 — Blinn-Phong Lighting**：实现 Ambient、Diffuse、Specular，支持控制材质参数和光源位置。
-- [ ] **HW41 — Flat Shading**：每个三角形只计算一次光照，观察模型的平面着色效果。
-- [ ] **HW42 — Gouraud Shading**：在顶点计算光照颜色，再插值到三角形内部。
-- [ ] **HW43 — Phong Shading**：对顶点法线插值，在每个像素计算光照，并与 Gouraud 对比。
-- [ ] **HW44 — Normal Transformation**：实现法线矩阵，正确处理模型的非均匀缩放。
-- [ ] **HW45 — UV Mapping**：为三角形和立方体添加 UV 坐标，理解纹理坐标与顶点属性。
-- [ ] **HW46 — Texture Sampling**：读取纹理图像，实现 UV 到纹理像素的映射及最近邻采样。
-- [ ] **HW47 — Bilinear Filtering**：根据周围四个 Texel 进行双线性插值。
-- [ ] **HW48 — Perspective-Correct Interpolation**：利用 1/w 修正纹理坐标及其他属性的透视插值。
-- [ ] **HW49 — Mipmap Generation**：逐级降采样生成 Mipmap，建立纹理金字塔。
-- [ ] **HW50 — Trilinear Filtering**：估算纹理 LOD，在相邻 Mipmap 层级之间进行插值。
+- [x] **HW32 — Aliasing**：绘制高频图案、斜线和重复纹理，观察锯齿与摩尔纹。
+- [x] **HW33 — Signal Sampling**：生成周期信号，比较不同采样频率的结果，理解 Nyquist Sampling。
+- [x] **HW34 — Image Filtering**：实现二维卷积和低通滤波，对比直接降采样与滤波后降采样。
+- [x] **HW35 — SSAA**：以更高分辨率渲染图像，再进行过滤和降采样。
+- [x] **HW36 — MSAA Improvement**：将多重采样应用于三维光栅化场景，处理深度、覆盖与颜色。
+- [x] **HW37 — Rasterization Rules**：实现 Top-Left Rule，处理退化三角形、共享边和像素中心采样规则。
+- [x] **HW38 — Surface Normal**：根据三角形顶点计算面法线，并根据邻接面计算顶点法线。
+- [x] **HW39 — Lambert Lighting**：实现 Ambient 与 Diffuse，利用法线和光照方向计算亮度。
+- [x] **HW40 — Blinn-Phong Lighting**：实现 Ambient、Diffuse、Specular，支持控制材质参数和光源位置。
+- [x] **HW41 — Flat Shading**：每个三角形只计算一次光照，观察模型的平面着色效果。
+- [x] **HW42 — Gouraud Shading**：在顶点计算光照颜色，再插值到三角形内部。
+- [x] **HW43 — Phong Shading**：对顶点法线插值，在每个像素计算光照，并与 Gouraud 对比。
+- [x] **HW44 — Normal Transformation**：实现法线矩阵，正确处理模型的非均匀缩放。
+- [x] **HW45 — UV Mapping**：为三角形和立方体添加 UV 坐标，理解纹理坐标与顶点属性。
+- [x] **HW46 — Texture Sampling**：读取纹理图像，实现 UV 到纹理像素的映射及最近邻采样。
+- [x] **HW47 — Bilinear Filtering**：根据周围四个 Texel 进行双线性插值。
+- [x] **HW48 — Perspective-Correct Interpolation**：利用 1/w 修正纹理坐标及其他属性的透视插值。
+- [x] **HW49 — Mipmap Generation**：逐级降采样生成 Mipmap，建立纹理金字塔。
+- [x] **HW50 — Trilinear Filtering**：估算纹理 LOD，在相邻 Mipmap 层级之间进行插值。
 - [ ] **HW51 — Anisotropic Filtering**：实现基础各向异性纹理过滤实验，对比斜视表面的采样质量。
 - [ ] **HW52 — Bump Mapping**：根据高度图梯度修改表面法线，产生凹凸视觉效果。
 - [ ] **HW53 — Displacement Mapping**：根据高度图移动几何顶点，对比真实位移与 Bump Mapping。
 - [ ] **HW54 — Environment Mapping**：根据视线和表面反射方向采样环境纹理，实现基础环境反射。
 - [ ] **HW55 — Final Software Rasterizer**：整合 MVP、Clipping、Z-Buffer、MSAA、纹理采样与 Blinn-Phong，渲染完整的可旋转三维模型。
-- [ ] 
+
+studio_small_09.hdr
+
 - [ ] **HW56 — Implicit Geometry**：使用隐式方程表示圆、球体及其他基础几何体，判断点与表面的空间关系。
 - [ ] **HW57 — Signed Distance Function**：实现球体和盒子的 SDF，计算空间点到表面的有符号距离。
 - [ ] **HW58 — Constructive Solid Geometry**：使用 Union、Intersection、Difference 组合隐式几何体。
@@ -109,3 +121,5 @@ Computer Graphics from Scratch in C++ — 100 Hands-on Exercises
 - [ ] **HW98 — Direct Lighting & Path Tracing**：实现面光源直接光照、软阴影及递归间接光照。
 - [ ] **HW99 — Russian Roulette & Sampling**：实现路径随机终止和每像素多样本累积，对比不同 SPP 的噪声。
 - [ ] **HW100 — Final Path Tracer**：整合 Camera、Ray Intersection、BVH、BRDF、Monte Carlo 与间接光照，渲染 Cornell Box。
+
+第一个真正运行在 GPU 上的 C++ 渲染器

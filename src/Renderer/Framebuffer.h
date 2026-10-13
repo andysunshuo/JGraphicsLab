@@ -1,14 +1,15 @@
 
 #pragma once
 
-#include <cstdint>
+#include "Core/Color.h"
+#include <filesystem>
 
 namespace Raster
 {
     constexpr int WIDTH = 100;
     constexpr int HEIGHT = 100;
 
-    using Color = std::uint32_t;
+
 
     Color MakeColor(int r, int g, int b);
 
@@ -21,4 +22,10 @@ namespace Raster
     int GetG(Raster::Color color);
     int GetB(Raster::Color color);
 
+}
+
+namespace Raster {
+const Color* Pixels();
+Color ReadPixel(int x, int y);
+bool SavePPM(const std::filesystem::path& path);
 }

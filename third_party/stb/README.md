@@ -1,0 +1,1 @@
+# stb_image\n\n复用项目已准备好的 stb_image v2.30，只启用 HDR 解码，不在构建时联网。\n\nSHA-256：594c2fe35d49488b4382dbfaec8f98366defca819d916ac95becf3e75f4200b3\n\n官方来源：https://github.com/nothings/stb/blob/master/stb_image.h\n\n头文件原样保存；双重许可证见 LICENSE。\n

@@ -31,6 +31,10 @@ compile_commands.json
 # Compiled object files
 *.o
 *.obj
+# Wavefront OBJ test assets are source data, not compiled object files.
+!/JRenderLab/Assets/Models/*.obj
+# 当前工程根目录中的 OBJ 是模型源数据。
+!/Assets/Models/*.obj
 *.lo
 *.slo
 *.pch
