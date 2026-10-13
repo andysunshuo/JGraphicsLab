@@ -1,4 +1,6 @@
 # JGraphicsLab
+
+当前 `renderer-from-scratch` 分支的编译与运行问题已修复，启动方法和修复记录见 [当前分支编译修复](docs/当前分支编译修复.md)。本分支运行 OBJ 三个彩色顶点实验；完整 HW 工程在 `main` 分支。
 Computer Graphics from Scratch in C++ — 100 Hands-on Exercises
 
 > 

@@ -1,10 +1,11 @@
 
-#include <windows.h>
 #include <cstdint>
+#include <exception>
+#include <windows.h>
 
 #include "RasterWindow.h"
 
-// ƒ„µƒ◊˜“µ∫Ø ˝
+// ‰Ω†ÁöÑ‰Ωú‰∏öÂáΩÊï∞
 void RenderScene();
 
 // ============================================================
@@ -13,8 +14,7 @@ void RenderScene();
 
 namespace
 {
-    Raster::Color framebuffer
-        [Raster::WIDTH * Raster::HEIGHT] = {};
+Raster::Color framebuffer[Raster::WIDTH * Raster::HEIGHT] = {};
 }
 
 // ============================================================
@@ -23,54 +23,45 @@ namespace
 
 namespace Raster
 {
-    Color MakeColor(int r, int g, int b)
+Color MakeColor(int r, int g, int b)
+{
+    return (static_cast<Color>(r & 255) << 16) | (static_cast<Color>(g & 255) << 8) | static_cast<Color>(b & 255);
+}
+
+void Clear(Color color)
+{
+    for (int i = 0; i < WIDTH * HEIGHT; i++)
     {
-        return
-            (static_cast<Color>(r & 255) << 16) |
-            (static_cast<Color>(g & 255) << 8) |
-            static_cast<Color>(b & 255);
-    }
-
-    void Clear(Color color)
-    {
-        for (int i = 0; i < WIDTH * HEIGHT; i++)
-        {
-            framebuffer[i] = color;
-        }
-    }
-
-    void PutPixel(int x, int y, Color color)
-    {
-        if (x < 0 || x >= WIDTH ||
-            y < 0 || y >= HEIGHT)
-        {
-            return;
-        }
-
-        // Y œÚ…œ£¨‘≠µ„‘⁄◊Ûœ¬Ω«
-        int index = (HEIGHT - 1 - y) * WIDTH + x;
-
-        framebuffer[index] = color;
+        framebuffer[i] = color;
     }
 }
+
+void PutPixel(int x, int y, Color color)
+{
+    if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
+    {
+        return;
+    }
+
+    // Y Âêë‰∏äÔºåÂéüÁÇπÂú®Â∑¶‰∏ãËßí
+    int index = (HEIGHT - 1 - y) * WIDTH + x;
+
+    framebuffer[index] = color;
+}
+} // namespace Raster
 
 // ============================================================
 // Windows Message Handler
 // ============================================================
 
-LRESULT CALLBACK WindowProc(
-    HWND hwnd,
-    UINT message,
-    WPARAM wParam,
-    LPARAM lParam)
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
     case WM_ERASEBKGND:
         return 1;
 
-    case WM_PAINT:
-    {
+    case WM_PAINT: {
         PAINTSTRUCT ps = {};
         HDC hdc = BeginPaint(hwnd, &ps);
 
@@ -79,14 +70,11 @@ LRESULT CALLBACK WindowProc(
 
         BITMAPINFO bitmapInfo = {};
 
-        bitmapInfo.bmiHeader.biSize =
-            sizeof(BITMAPINFOHEADER);
+        bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 
-        bitmapInfo.bmiHeader.biWidth =
-            Raster::WIDTH;
+        bitmapInfo.bmiHeader.biWidth = Raster::WIDTH;
 
-        bitmapInfo.bmiHeader.biHeight =
-            -Raster::HEIGHT;
+        bitmapInfo.bmiHeader.biHeight = -Raster::HEIGHT;
 
         bitmapInfo.bmiHeader.biPlanes = 1;
         bitmapInfo.bmiHeader.biBitCount = 32;
@@ -94,21 +82,8 @@ LRESULT CALLBACK WindowProc(
 
         SetStretchBltMode(hdc, COLORONCOLOR);
 
-        StretchDIBits(
-            hdc,
-            0,
-            0,
-            rect.right - rect.left,
-            rect.bottom - rect.top,
-            0,
-            0,
-            Raster::WIDTH,
-            Raster::HEIGHT,
-            framebuffer,
-            &bitmapInfo,
-            DIB_RGB_COLORS,
-            SRCCOPY
-        );
+        StretchDIBits(hdc, 0, 0, rect.right - rect.left, rect.bottom - rect.top, 0, 0, Raster::WIDTH, Raster::HEIGHT,
+                      framebuffer, &bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
 
         EndPaint(hwnd, &ps);
         return 0;
@@ -119,22 +94,16 @@ LRESULT CALLBACK WindowProc(
         return 0;
     }
 
-    return DefWindowProcW(
-        hwnd, message, wParam, lParam
-    );
+    return DefWindowProcW(hwnd, message, wParam, lParam);
 }
 
 // ============================================================
 // Application Entry
 // ============================================================
 
-int WINAPI wWinMain(
-    HINSTANCE instance,
-    HINSTANCE,
-    PWSTR,
-    int showCommand)
+int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int showCommand)
 {
-    const wchar_t* className = L"JGraphicsLabWindow";
+    const wchar_t *className = L"JGraphicsLabWindow";
 
     WNDCLASSW wc = {};
     wc.lpfnWndProc = WindowProc;
@@ -147,31 +116,12 @@ int WINAPI wWinMain(
         return 1;
     }
 
-    RECT rect = {
-        0, 0,
-        600, 600
-    };
+    RECT rect = {0, 0, 600, 600};
 
-    AdjustWindowRect(
-        &rect,
-        WS_OVERLAPPEDWINDOW,
-        FALSE
-    );
+    AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
 
-    HWND hwnd = CreateWindowExW(
-        0,
-        className,
-        L"JGraphicsLab",
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        rect.right - rect.left,
-        rect.bottom - rect.top,
-        nullptr,
-        nullptr,
-        instance,
-        nullptr
-    );
+    HWND hwnd = CreateWindowExW(0, className, L"JGraphicsLab", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+                                rect.right - rect.left, rect.bottom - rect.top, nullptr, nullptr, instance, nullptr);
 
     if (!hwnd)
     {
@@ -179,10 +129,20 @@ int WINAPI wWinMain(
     }
 
     // ========================================================
-    // ÷¥––ƒ„µƒÕº–Œ—ß◊˜“µ
+    // ÊâßË°å‰Ω†ÁöÑÂõæÂΩ¢Â≠¶‰Ωú‰∏ö
     // ========================================================
 
-    RenderScene();
+    try
+    {
+        RenderScene();
+    }
+    catch (const std::exception &)
+    {
+        MessageBoxW(hwnd, L"Ê®°ÂûãÂä†ËΩΩÊàñÁªòÂà∂Â§±Ë¥•ÔºåËØ∑Ê£ÄÊü• assets/models/triangle.obj ÂíåËµÑÊ∫êÁõÆÂΩï„ÄÇ",
+                    L"JGraphicsLab ÂêØÂä®Â§±Ë¥•", MB_OK | MB_ICONERROR);
+        DestroyWindow(hwnd);
+        return 1;
+    }
 
     // ========================================================
 

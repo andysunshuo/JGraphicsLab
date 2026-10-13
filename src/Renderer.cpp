@@ -1,12 +1,16 @@
 
 #include "RasterWindow.h"
+#include <stdexcept>
 
+#include "geometry/OBJLoader.h"
+#include "rasterizer/Transform.h"
+#include "rasterizer/TriangleRasterizer.h"
 // ============================================================
 // JGraphicsLab
 //
 // HW01 - Pixel Rendering
 //
-// Framebuffer: 100 × 100
+// Framebuffer: 100 脳 100
 //
 // X: 0 ~ 99
 // Y: 0 ~ 99
@@ -15,39 +19,30 @@
 //
 // ============================================================
 
-
 void RenderScene()
 {
-    // 清空画布
-    Raster::Clear(
-        Raster::MakeColor(0, 0, 0)
-    );
+    Raster::Clear(Raster::MakeColor(0, 0, 0));
 
+    Mesh mesh = OBJLoader::Load("assets/models/triangle.obj");
 
-    // HW01：绘制三个不同颜色的像素
+    if (mesh.indices.empty())
+        throw std::runtime_error("妯″瀷鍔犺浇澶辫触");
 
-    // 红色
-    Raster::PutPixel(
-        20, 20,
-        Raster::MakeColor(255, 0, 0)
-    );
-    Raster::Color green = Raster::MakeColor(0, 255, 0);
-    // 绿色
-    Raster::PutPixel(
-        50, 50,
-        green
-    );
+    for (std::size_t i = 0; i + 2 < mesh.indices.size(); i += 3)
+    {
 
-    // 蓝色
-    Raster::PutPixel(
-        99, 99,
-        Raster::MakeColor(0, 0, 255)
-    );
+        Vertex v0 = mesh.vertices[mesh.indices[i]];
 
-    // ========================================================
-    // HW01 - Pixel Rendering
-    // ========================================================
+        Vertex v1 = mesh.vertices[mesh.indices[i + 1]];
 
-    // 在这里完成你的 HW01
+        Vertex v2 = mesh.vertices[mesh.indices[i + 2]];
 
+        ScreenVertex s0 = ToScreen(v0.position, Raster::WIDTH, Raster::HEIGHT);
+
+        ScreenVertex s1 = ToScreen(v1.position, Raster::WIDTH, Raster::HEIGHT);
+
+        ScreenVertex s2 = ToScreen(v2.position, Raster::WIDTH, Raster::HEIGHT);
+
+        RasterizeTriangle(s0, s1, s2);
+    }
 }
