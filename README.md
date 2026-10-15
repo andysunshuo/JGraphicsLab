@@ -1,6 +1,10 @@
 # JGraphicsLab
 
-当前 `renderer-from-scratch` 分支的编译与运行问题已修复，启动方法和修复记录见 [当前分支编译修复](docs/当前分支编译修复.md)。本分支运行 OBJ 三个彩色顶点实验；完整 HW 工程在 `main` 分支。
+2026-10-15：基础 OBJ → MVP → 裁剪 → 三角形填充/深度管线已修通，实际帧缓冲改为 1000×1000，默认显示 Cube。运行和参数位置见 [基础 OBJ 渲染](docs/基础OBJ渲染_1000x1000.md)。
+
+新目录的自有头文件接口与中文实现注释已补齐，建议从数学基础逐步实现 .cpp；步骤见 [头文件接口与实现顺序](docs/头文件接口与实现顺序.md)。资产目录已从 .gitignore 排除规则中豁免，提交时请勾选 assets 内模型。
+
+此前的三顶点演示修复记录见 [当前分支编译修复](docs/当前分支编译修复.md)。当前分支已推进到基础 OBJ 实心渲染，以上面的最新文档为准；完整 HW 工程在 `main` 分支。
 Computer Graphics from Scratch in C++ — 100 Hands-on Exercises
 
 > 

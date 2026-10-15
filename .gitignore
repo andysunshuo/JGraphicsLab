@@ -83,3 +83,11 @@ Testing/
 
 # CMake build
 /out/
+
+# 项目资源是源数据；OBJ 模型不能被上面的 *.obj 编译产物规则排除。
+# 保留两种目录大小写，便于在不同电脑和系统上克隆。
+# 这些例外仅限仓库根资产目录，out/build 中的目标文件仍然忽略。
+!/assets/
+!/assets/**
+!/Assets/
+!/Assets/**
