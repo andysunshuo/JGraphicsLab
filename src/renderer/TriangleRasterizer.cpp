@@ -45,20 +45,28 @@ float EvaluateClipPlane(const Vec4 &p, int plane)
         throw std::invalid_argument("裁剪平面编号无效");
     }
 }
+
+//  计算“边与裁剪平面的交点”时，这个新顶点的数据从哪里来？
+// 已知线段 AB 上的一个交点比例 t，计算这个交点的完整 ClipVertex。
 ClipVertex InterpolateClipVertex(const ClipVertex &a, const ClipVertex &b, float t)
 {
     return {Vec4::Lerp(a.position, b.position, t), Vec3::Lerp(a.worldPosition, b.worldPosition, t),
             Vec3::Lerp(a.normal, b.normal, t), Vec2::Lerp(a.uv, b.uv, t), Vec3::Lerp(a.color, b.color, t)};
 }
+// 把一个多边形裁剪掉一个平面外的部分
+// 一次只裁剪一个平面。
 std::vector<ClipVertex> ClipPolygonAgainstPlane(const std::vector<ClipVertex> &polygon, int plane)
 {
     std::vector<ClipVertex> result;
     if (polygon.empty())
         return result;
-    if (polygon.size() > 16)
+    if (polygon.size() > 16)  // 人为设置 defensive programming。
         throw std::invalid_argument("裁剪临时多边形超过预算");
-    result.reserve(polygon.size() + 1);
-    auto previous = polygon.back();
+    result.reserve(polygon.size() + 1);  // 提前给 vector 准备一些容量。
+    auto previous = polygon.back();    // .back 返回 vector 的最后一个元素。 
+    // 循环处理，这里最重要。  C-A  A-B  B-C 
+    // 计算 previous 到裁剪平面的距离
+    // 重要
     float dp = EvaluateClipPlane(previous.position, plane);
     for (const auto &current : polygon)
     {
@@ -72,13 +80,18 @@ std::vector<ClipVertex> ClipPolygonAgainstPlane(const std::vector<ClipVertex> &p
             if (denominator != 0)
                 result.push_back(InterpolateClipVertex(previous, current, static_cast<float>(dp / denominator)));
         }
+        // 如果 current 在裁剪平面内部，就把 current 保留下来。
         if (dc >= 0)
             result.push_back(current);
+        // 更新循环。
         previous = current;
         dp = dc;
     }
     return result;
 }
+
+
+// 把三角形依次裁剪 6 个视锥体平面
 std::vector<ClipVertex> ClipTriangleToFrustum(const ClipVertex &a, const ClipVertex &b, const ClipVertex &c)
 {
     if (!a.position.IsFinite() || !b.position.IsFinite() || !c.position.IsFinite())
@@ -88,10 +101,18 @@ std::vector<ClipVertex> ClipTriangleToFrustum(const ClipVertex &a, const ClipVer
         polygon = ClipPolygonAgainstPlane(polygon, plane);
     return polygon;
 }
+
+
+//  一个像素落在三角形内部以后，这个像素的颜色、UV、法线、世界坐标到底是多少？
+// abc三角形顶点， 重心坐标。
+// 直接用屏幕空间重心坐标插值 3D 属性，会产生透视畸变。
 ScreenVertex InterpolateAttributes(const ScreenVertex &a, const ScreenVertex &b, const ScreenVertex &c,
                                    const Barycentric &w, bool corrected)
 {
     auto weights = w;
+    // Perspective-Correct Interpolation
+    //透视正确插值。
+    // 重要
     if (corrected)
     {
         weights = {w.alpha * a.reciprocalW, w.beta * b.reciprocalW, w.gamma * c.reciprocalW};
@@ -100,6 +121,8 @@ ScreenVertex InterpolateAttributes(const ScreenVertex &a, const ScreenVertex &b,
             throw std::invalid_argument("透视插值分母无效");
         weights = {weights.alpha / sum, weights.beta / sum, weights.gamma / sum};
     }
+    // 输入三个 Vec3
+    // 按照当前权重混合
     const auto mix3 = [&](const Vec3 &x, const Vec3 &y, const Vec3 &z) {
         return x * weights.alpha + y * weights.beta + z * weights.gamma;
     };
@@ -115,33 +138,47 @@ ScreenVertex InterpolateAttributes(const ScreenVertex &a, const ScreenVertex &b,
     result.uv = a.uv * weights.alpha + b.uv * weights.beta + c.uv * weights.gamma;
     return result;
 }
-void RasterizeTriangle(ScreenVertex a, ScreenVertex b, ScreenVertex c)
+
+
+//  到底哪些像素属于三角形，以及这些像素的深度是多少？
+// 把一个屏幕空间三角形转换成一组像素。
+void RasterizeTriangle(ScreenVertex a, ScreenVertex b, ScreenVertex c)  // 值传递
 {
+    // 检查值
     const auto valid = [](const ScreenVertex &v) {
         return std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.ndcZ) && std::isfinite(v.reciprocalW) &&
                v.reciprocalW > 0 && v.color.IsFinite();
     };
     if (!valid(a) || !valid(b) || !valid(c))
         return;
+
+    // 算面积
     float area = EdgeFunction({a.x, a.y}, {b.x, b.y}, {c.x, c.y});
     if (!std::isfinite(area) || std::abs(area) < 1e-7f)
         return;
     if (area < 0)
     {
+        // 重要，为什么要交换值。
         std::swap(b, c);
         area = -area;
     }
+
     // 先裁浮点包围盒，再转换 int，防止巨大坐标导致整数溢出。
+    // 为什么先 float 裁剪，再转 int
     const float minX = std::max(0.f, std::min({a.x, b.x, c.x})),
                 maxX = std::min(float(Raster::WIDTH - 1), std::max({a.x, b.x, c.x}));
     const float minY = std::max(0.f, std::min({a.y, b.y, c.y})),
                 maxY = std::min(float(Raster::HEIGHT - 1), std::max({a.y, b.y, c.y}));
     if (minX > maxX || minY > maxY)
         return;
+
+
     const Vec2 p0{a.x, a.y}, p1{b.x, b.y}, p2{c.x, c.y};
     const auto same = [](const Vec3 &x, const Vec3 &y) { return x.x == y.x && x.y == y.y && x.z == y.z; };
     const bool flat = same(a.color, b.color) && same(a.color, c.color);
     const auto flatColor = flat ? Raster::EncodeLinearColor(a.color) : Raster::Color{};
+
+    // 进入真正的光栅化循环  逐行↓逐列↓逐像素
     for (int y = int(std::floor(minY)); y <= int(std::ceil(maxY)); ++y)
         for (int x = int(std::floor(minX)); x <= int(std::ceil(maxX)); ++x)
         {
