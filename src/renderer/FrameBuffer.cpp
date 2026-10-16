@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
+#include "assets/WicSupport.h"
 
 namespace
 {
@@ -97,5 +98,46 @@ bool SavePPM(const char *utf8Path)
         file.write(rgb, 3);
     }
     return static_cast<bool>(file);
+}
+bool SavePNG(const char *utf8Path)
+{
+    try
+    {
+        ImageIO::Apartment apartment;
+        using Microsoft::WRL::ComPtr;
+        ComPtr<IWICImagingFactory> factory;
+        ImageIO::Check(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
+                                       IID_PPV_ARGS(&factory)), "无法创建 PNG 工厂");
+        ComPtr<IWICStream> stream;
+        ImageIO::Check(factory->CreateStream(&stream), "无法创建 PNG 输出流");
+        const auto path = std::filesystem::u8path(utf8Path);
+        ImageIO::Check(stream->InitializeFromFilename(path.c_str(), GENERIC_WRITE), "无法打开 PNG 输出文件");
+        ComPtr<IWICBitmapEncoder> encoder;
+        ImageIO::Check(factory->CreateEncoder(GUID_ContainerFormatPng, nullptr, &encoder), "无法创建 PNG 编码器");
+        ImageIO::Check(encoder->Initialize(stream.Get(), WICBitmapEncoderNoCache), "无法初始化 PNG 编码器");
+        ComPtr<IWICBitmapFrameEncode> frame;
+        ImageIO::Check(encoder->CreateNewFrame(&frame, nullptr), "无法创建 PNG 帧");
+        ImageIO::Check(frame->Initialize(nullptr), "无法初始化 PNG 帧");
+        ImageIO::Check(frame->SetSize(WIDTH, HEIGHT), "无法设置 PNG 尺寸");
+        auto format = GUID_WICPixelFormat24bppBGR;
+        ImageIO::Check(frame->SetPixelFormat(&format), "无法设置 PNG 格式");
+        if (!IsEqualGUID(format, GUID_WICPixelFormat24bppBGR))
+            throw std::runtime_error("PNG 编码器不接受 BGR 格式");
+        std::vector<BYTE> bgr(static_cast<std::size_t>(WIDTH) * HEIGHT * 3);
+        for (std::size_t i = 0; i < colors.size(); ++i)
+        {
+            bgr[3 * i] = static_cast<BYTE>(colors[i]);
+            bgr[3 * i + 1] = static_cast<BYTE>(colors[i] >> 8);
+            bgr[3 * i + 2] = static_cast<BYTE>(colors[i] >> 16);
+        }
+        ImageIO::Check(frame->WritePixels(HEIGHT, WIDTH * 3, static_cast<UINT>(bgr.size()), bgr.data()), "无法写 PNG 像素");
+        ImageIO::Check(frame->Commit(), "PNG 帧提交失败");
+        ImageIO::Check(encoder->Commit(), "PNG 文件提交失败");
+        return true;
+    }
+    catch (const std::exception &)
+    {
+        return false;
+    }
 }
 } // namespace Raster

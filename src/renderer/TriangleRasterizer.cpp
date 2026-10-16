@@ -1,4 +1,6 @@
 #include "renderer/TriangleRasterizer.h"
+#include "material/Material.h"
+#include "scene/Camera.h"
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
@@ -142,7 +144,12 @@ ScreenVertex InterpolateAttributes(const ScreenVertex &a, const ScreenVertex &b,
 
 //  到底哪些像素属于三角形，以及这些像素的深度是多少？
 // 把一个屏幕空间三角形转换成一组像素。
-void RasterizeTriangle(ScreenVertex a, ScreenVertex b, ScreenVertex c)  // 值传递
+namespace
+{
+// 基础面色和光照共用同一覆盖、深度、插值循环；shade 仅负责线性颜色。
+template <class Shade>
+void RasterizeCoveredTriangle(ScreenVertex a, ScreenVertex b, ScreenVertex c,
+                               bool depthTest, bool perspectiveCorrect, bool interpolateOnly, Shade &&shade)
 {
     // 检查值
     const auto valid = [](const ScreenVertex &v) {
@@ -175,7 +182,7 @@ void RasterizeTriangle(ScreenVertex a, ScreenVertex b, ScreenVertex c)  // 值�
 
     const Vec2 p0{a.x, a.y}, p1{b.x, b.y}, p2{c.x, c.y};
     const auto same = [](const Vec3 &x, const Vec3 &y) { return x.x == y.x && x.y == y.y && x.z == y.z; };
-    const bool flat = same(a.color, b.color) && same(a.color, c.color);
+    const bool flat = interpolateOnly && same(a.color, b.color) && same(a.color, c.color);
     const auto flatColor = flat ? Raster::EncodeLinearColor(a.color) : Raster::Color{};
 
     // 进入真正的光栅化循环  逐行↓逐列↓逐像素
@@ -193,8 +200,26 @@ void RasterizeTriangle(ScreenVertex a, ScreenVertex b, ScreenVertex c)  // 值�
             if (!std::isfinite(z) || z < -1.00001f || z > 1.00001f)
                 continue;
             const float depth = std::clamp(z * .5f + .5f, 0.f, 1.f);
-            if (Raster::DepthTest(x, y, depth))
+            if (!depthTest || Raster::DepthTest(x, y, depth))
                 Raster::PutPixel(
-                    x, y, flat ? flatColor : Raster::EncodeLinearColor(InterpolateAttributes(a, b, c, w, true).color));
+                    x, y, flat ? flatColor : Raster::EncodeLinearColor(shade(InterpolateAttributes(a, b, c, w, perspectiveCorrect))));
         }
+}
+} // namespace
+
+void RasterizeTriangle(ScreenVertex a, ScreenVertex b, ScreenVertex c)
+{
+    RasterizeCoveredTriangle(a, b, c, true, true, true, [](const ScreenVertex &v) { return v.color; });
+}
+void RasterizeTriangleShaded(const ScreenVertex &a, const ScreenVertex &b, const ScreenVertex &c,
+                             const Material &material, const Camera &camera, const std::vector<Light> &lights,
+                             const TriangleRenderOptions &options)
+{
+    const bool perPixel = options.shading == ShadingMode::Phong;
+    if (!perPixel && options.shading != ShadingMode::Flat && options.shading != ShadingMode::Gouraud)
+        throw std::invalid_argument("三角形着色方式无效");
+    RasterizeCoveredTriangle(a, b, c, options.depthTest, options.perspectiveCorrect, !perPixel,
+        [&](const ScreenVertex &v) {
+            return perPixel ? material.Evaluate(v.worldPosition, v.normal, camera.eye, v.uv, lights) : v.color;
+        });
 }

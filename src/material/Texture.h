@@ -28,11 +28,11 @@ struct TextureLevel
     std::vector<Vec3> pixels; // 行号从上到下，三通道浮点值。
 };
 
-// 在 Texture.cpp 实现；先完成图像读取和最近邻，再写双线性、Mipmap、三线性。
+// Texture.cpp 已实现 WIC 读图、最近邻、双线性、Mipmap 和三线性；演示默认双线性基础级。
 class Texture
 {
   public:
-    // 可以用 Windows WIC 读取 PNG/JPEG；此时 CMake 需链接 windowscodecs 和 ole32。
+    // 使用 Windows WIC 读取 PNG/JPEG/BMP，CMake 已链接 windowscodecs 和 ole32。
     // 校验文件/尺寸预算：64 MiB、单边 <=2048；失败清空并返回中文 error。
     // 颜色图调用 Raster::DecodeSrgbColor，数据图只把通道除以 255。
     bool Load(const std::string &utf8Path, TextureEncoding encoding = TextureEncoding::SrgbColor,

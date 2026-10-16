@@ -1,0 +1,7 @@
+# 学习用岩石：颜色图只参与环境项与漫反射。
+newmtl stone
+Ka 0.18 0.18 0.18
+Kd 1 1 1
+Ks 0.15 0.15 0.15
+Ns 24
+map_Kd -s 2 2 1 ../textures/rock_boulder_dry_diff_1k.jpg

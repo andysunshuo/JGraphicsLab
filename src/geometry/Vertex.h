@@ -17,9 +17,10 @@ struct ClipVertex
 {
     Vec4 position{}; // P*V*M*Position；保留 w，先裁剪再除 w。
     Vec3 worldPosition{};
-    Vec3 normal{}; // 世界空间法线，裁剪时线性插值，着色时归一化。
+    Vec3 normal{}; // 着色入口应填世界空间法线：transpose(inverse(M3))*Nmodel；着色时再归一化。
+    // 现有 DrawMeshBasic 仅传递原法线且不计算光照；不能直接当成已完成法线变换。
     Vec2 uv{};
-    Vec3 color{1, 1, 1};
+    Vec3 color{1, 1, 1}; // 基础入口是面色；Flat/Gouraud 着色入口是已求得的线性光照结果。
 };
 
 // 保留 x、y 两个首字段，现有 RasterizeTriangle.cpp 仍然直接使用它们。
@@ -29,7 +30,7 @@ struct ScreenVertex
     float ndcZ = 0;        // [-1,1]，深度映射为 ndcZ*0.5+0.5。
     float reciprocalW = 1; // 保存 1/clip.w，供透视正确属性插值。
     Vec3 worldPosition{};
-    Vec3 normal{};
+    Vec3 normal{}; // 来自世界空间；插值后通常不再是单位向量，交给 Material::Evaluate 归一化。
     Vec2 uv{};
-    Vec3 color{1, 1, 1};
+    Vec3 color{1, 1, 1}; // Flat/Gouraud 插值此项；Phong 根据插值属性求光照，不重复乘此颜色。
 };

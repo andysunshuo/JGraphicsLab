@@ -19,6 +19,7 @@ float GetDepth(int x, int y);
 Color GetPixel(int x, int y);
 const Color *Pixels();
 bool SavePPM(const char *utf8Path);
+bool SavePNG(const char *utf8Path); // WIC 无损输出；保存真实 1000×1000 缓冲，不截取窗口缩放图。
 
 // 在 renderer/FrameBuffer.cpp 集中实现颜色空间转换。
 // Encode：有限检查、钳制 [0,1]，线性值 <=0.0031308 乘 12.92，否则用 sRGB 幂律。

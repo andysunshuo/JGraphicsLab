@@ -1,0 +1,7 @@
+# 学习用木材：颜色来自 Poly Haven CC0 贴图；不是原模型配套材质。
+newmtl wood
+Ka 0.18 0.18 0.18
+Kd 1 1 1
+Ks 0.25 0.25 0.25
+Ns 48
+map_Kd -s 2 2 1 ../textures/wood_floor_diff_1k.jpg

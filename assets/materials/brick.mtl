@@ -1,0 +1,7 @@
+# 学习用砖墙：低高光，方便与木材比较。
+newmtl brick
+Ka 0.18 0.18 0.18
+Kd 1 1 1
+Ks 0.08 0.08 0.08
+Ns 12
+map_Kd -s 2 2 1 ../textures/brick_wall_02_diff_1k.jpg
