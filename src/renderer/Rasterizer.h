@@ -25,7 +25,7 @@ struct RenderStats
 RenderStats DrawMeshBasic(const Mesh &mesh, const Mat4 &model, const Camera &camera, bool faceColors = true,
                           Raster::Color solidColor = 0x00a8c8f0);
 
-// Rasterizer.cpp 已实现，窗口与命令行共用现有固定 Raster 缓冲的经典着色入口。
+// Rasterizer.cpp 中的 DrawShaded 待补全；窗口与命令行共用现有固定 Raster 缓冲的经典着色入口。
 // 不必先写下面的 Rasterizer 类/动态 FrameBuffer，也不用实现 Texture、Ray、BVH。
 // 参数 model 是含 AutoFit 的完整仿射模型矩阵；相机、光源、世界属性使用同一空间。
 // 本阶段先使用透视相机；Evaluate 的 eye-P 不适用于正交相机的平行视线，正交着色暂明确报错。

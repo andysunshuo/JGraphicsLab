@@ -254,7 +254,7 @@ Vec3 Material::BaseColorAt(
     ValidateColor01(baseColor, "baseColor");
     if (albedoTexture)
     {
-        const Vec2 mapped{uv.x * uvScale.x + uvOffset.x, uv.y * uvScale.y + uvOffset.y};
+        const Vec2 mapped{ uv.x * uvScale.x + uvOffset.x, uv.y * uvScale.y + uvOffset.y };
         return baseColor.Hadamard(albedoTexture->Sample(mapped, filter, wrap, lod));
     }
 
@@ -551,7 +551,7 @@ LightingTerms Material::EvaluateTerms(
                 Vec3 specularLight = Hadamard3(specular, I);
                 if (specularTexture)
                 {
-                    const Vec2 mapped{uv.x * uvScale.x + uvOffset.x, uv.y * uvScale.y + uvOffset.y};
+                    const Vec2 mapped{ uv.x * uvScale.x + uvOffset.x, uv.y * uvScale.y + uvOffset.y };
                     specularLight = specularLight.Hadamard(specularTexture->Sample(mapped, filter, wrap, lod));
                 }
 
@@ -566,6 +566,7 @@ LightingTerms Material::EvaluateTerms(
         throw std::invalid_argument("光照合成结果不是有限值");
     return result;
 }
+
 
 // ============================================================
 // Evaluate

@@ -38,19 +38,37 @@ void ClearDepth(float depth)
 }
 void PutPixel(int x, int y, Color color)
 {
-    if (Contains(x, y))
+    if (Contains(x,y))
+    {
         colors[DisplayIndex(x, y)] = color;
+    }
 }
 bool DepthTest(int x, int y, float depth)
 {
-    if (!Contains(x, y) || !std::isfinite(depth) || depth < 0 || depth > 1)
+    // 1. 检查坐标和深度是否合法
+    if (!Contains(x, y) ||
+        !std::isfinite(depth) ||
+        depth < 0 ||
+        depth > 1)
+    {
         return false;
-    auto &saved = depths[static_cast<std::size_t>(y) * WIDTH + x];
+    }
+
+    // 2. 取得这个像素已保存的深度
+    // 会直接修改 depths[index]
+    auto& saved = depths[
+        static_cast<std::size_t>(y) * WIDTH + x
+    ];
+
+    // 3. 当前深度更小，代表距离相机更近
     if (depth < saved)
     {
+        // 4. 更新深度
         saved = depth;
         return true;
     }
+
+    // 5. 被遮挡，拒绝绘制
     return false;
 }
 float GetDepth(int x, int y)
@@ -69,24 +87,44 @@ const Color *Pixels()
 {
     return colors.data();
 }
-Color EncodeLinearColor(const Vec3 &linear)
+Color EncodeLinearColor(const Vec3& linear)
 {
+    // 1. 检查 RGB 是否包含 NaN 或 Infinity
     if (!linear.IsFinite())
+    {
         throw std::invalid_argument("颜色包含非有限值");
-    const auto encode = [](float c) {
+    }
+
+    // 2. 定义单通道编码函数
+    const auto encode = [](float c) -> int
+        {
+        // 将颜色限制在 [0,1]
         c = std::clamp(c, 0.0f, 1.0f);
-        return static_cast<int>(
-            std::lround(255 * (c <= 0.0031308f ? 12.92f * c : 1.055f * std::pow(c, 1 / 2.4f) - .055f)));
-    };
-    return MakeColor(encode(linear.x), encode(linear.y), encode(linear.z));
+
+        // Linear RGB 转换到 sRGB
+        float srgb = (c <= 0.0031308f)
+            ? 12.92f * c
+            : 1.055f * std::pow(c, 1.0f / 2.4f) - 0.055f;
+
+        // sRGB 浮点数转为 8-bit 整数
+        return static_cast<int>(std::lround(srgb * 255.0f));
+        };
+
+    // 3. 分别转换三个通道，再打包颜色
+    return MakeColor(
+        encode(linear.x),
+        encode(linear.y),
+        encode(linear.z)
+    );
 }
+
 Vec3 DecodeSrgbColor(Color color)
 {
     const auto decode = [](unsigned c) {
         const float v = c / 255.f;
         return v <= .04045f ? v / 12.92f : std::pow((v + .055f) / 1.055f, 2.4f);
-    };
-    return {decode((color >> 16) & 255), decode((color >> 8) & 255), decode(color & 255)};
+        };
+    return { decode((color >> 16) & 255), decode((color >> 8) & 255), decode(color & 255) };
 }
 bool SavePPM(const char *utf8Path)
 {

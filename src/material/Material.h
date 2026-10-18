@@ -22,7 +22,7 @@ struct LightingTerms
     Vec3 specular{};
 };
 
-// 着色练习第二步，在 material/Material.cpp 实现。Blinn-Phong 公式的唯一权威位置。
+// 在 material/Material.cpp 补全；Blinn-Phong 公式的唯一权威位置。
 // Flat/Gouraud/Phong 只改变调用 Evaluate 的位置，不能在光栅器再写三份光照公式。
 // 支持纯色和 MTL 颜色/高光贴图；不实现 PBR、阴影、光追或法线贴图。
 struct Material

@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
+# 新构建目录在编译器探测阶段也使用嵌入式调试信息，避开本机 C1902。
+if(POLICY CMP0141)
+    cmake_policy(SET CMP0141 NEW)
+    set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+endif()
 project(JGraphicsLab LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,11 +25,15 @@ target_link_libraries(JRenderBasic PUBLIC windowscodecs ole32)
 target_compile_definitions(JRenderBasic PUBLIC UNICODE _UNICODE NOMINMAX
     PRIVATE JGRAPHICSLAB_ASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets")
 if(MSVC)
-    target_compile_options(JRenderBasic PUBLIC /utf-8)
+    target_compile_options(JRenderBasic PUBLIC /utf-8 PRIVATE $<$<CONFIG:Debug>:/Z7>)
 endif()
 
 add_executable(JGraphicsLab WIN32 src/application/main.cpp)
 target_link_libraries(JGraphicsLab PRIVATE JRenderBasic user32 gdi32 shell32)
+if(MSVC)
+    # Debug 信息写入 .obj，避免本机 MSVC 的 C1902 PDB 管理器版本冲突。
+    target_compile_options(JGraphicsLab PRIVATE $<$<CONFIG:Debug>:/Z7>)
+endif()
 file(GLOB_RECURSE JGRAPHICSLAB_HEADERS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
 target_sources(JRenderBasic PRIVATE ${JGRAPHICSLAB_HEADERS})
 get_target_property(JGRAPHICSLAB_SOURCES JRenderBasic SOURCES)

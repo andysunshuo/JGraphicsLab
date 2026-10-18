@@ -5,9 +5,9 @@
 #include "renderer/TriangleRasterizer.h"
 
 // OBJ 缓存一次 -> 自动居中/等比缩放 -> Model/View/Projection -> 裁剪 -> 填充与深度。
-inline constexpr const char *kDefaultModelPath = "assets/models/cube.obj";
+inline constexpr const char *kDefaultModelPath = "assets/models/viking_room/viking_room.obj";
 inline constexpr LightingModel kDefaultLightingModel = LightingModel::BlinnPhong;
-inline constexpr const char *kDefaultMaterial = "plain";
+inline constexpr const char *kDefaultMaterial = "auto";
 
 struct SceneSettings
 {
@@ -26,4 +26,4 @@ bool SaveRenderedImage(const std::string &utf8Path); // 支持 .png 与 .ppm。
 
 // 已接通 Light/Material/OBJ/MTL/Texture；字符串重载保留基础面色，供原测试对照。
 // SceneSettings 入口缓存当前 OBJ 和当前替换材质；切换光照只重绘，不重新读盘。
-// 使用说明见 docs/OBJ材质贴图与光照使用.md；模型姿态、相机与光源在 Renderer.cpp 调整。
+// 函数补全顺序见 docs/从模型到渲染_函数补全顺序.md；模型姿态、相机与光源在 Renderer.cpp 调整。

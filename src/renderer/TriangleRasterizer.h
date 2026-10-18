@@ -50,12 +50,12 @@ std::vector<ClipVertex> ClipTriangleToFrustum(const ClipVertex &a, const ClipVer
 ScreenVertex InterpolateAttributes(const ScreenVertex &a, const ScreenVertex &b, const ScreenVertex &c,
                                    const Barycentric &weights, bool perspectiveCorrect = true);
 
-// 着色练习第三步，在 TriangleRasterizer.cpp 实现；复用当前 Raster 的 1000×1000 颜色/深度缓冲。
+// 在 TriangleRasterizer.cpp 补全；复用当前 Raster 的 1000×1000 颜色/深度缓冲。
 // 不依赖尚未实现的动态 FrameBuffer，也不引入 MSAA，先保持每像素中心一个样本。
 // a/b/c 已经裁剪和视口变换；Flat/Gouraud 的 color 由 DrawMeshShaded 在裁剪前准备。
 // 沿用 RasterizeTriangle 的有效性/有向面积/包围盒/Top-left/重心/深度代码，禁止改坐标约定。
 // 推荐把二者共有的覆盖循环提成 cpp 内部函数，各入口仅提供不同的线性颜色计算方式，
-// 而不是长期维护两套边函数、深度公式或裁剪算法；具体 cpp 框架见着色学习文档。
+// 而不是长期维护两套边函数、深度公式或裁剪算法；补全顺序见 docs/从模型到渲染_函数补全顺序.md。
 // 像素流程：覆盖 -> 屏幕线性 ndcZ -> [0,1] -> 深度测试 -> 属性插值 -> 计算线性 RGB -> 写颜色。
 // Flat/Gouraud：使用 InterpolateAttributes(...).color，不要对已经照明的颜色再照明。
 // Phong：Material::Evaluate(插值世界位置,插值法线,camera.eye,插值UV,lights)。

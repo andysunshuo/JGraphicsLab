@@ -74,9 +74,9 @@ RenderStats DrawMeshBasic(const Mesh &mesh, const Mat4 &model, const Camera &cam
 namespace
 {
 template <class GetMaterial>
-RenderStats DrawShaded(const Mesh &mesh, const Mat4 &model, const Camera &camera,
-                       const std::vector<Light> &lights, const TriangleRenderOptions &options,
-                       GetMaterial &&getMaterial)
+RenderStats DrawShaded(const Mesh& mesh, const Mat4& model, const Camera& camera,
+    const std::vector<Light>& lights, const TriangleRenderOptions& options,
+    GetMaterial&& getMaterial)
 {
     const auto start = std::chrono::steady_clock::now();
     if (mesh.indices.empty() || mesh.indices.size() % 3 || !model.IsFinite())
@@ -107,7 +107,7 @@ RenderStats DrawShaded(const Mesh &mesh, const Mat4 &model, const Camera &camera
     stats.inputTriangles = mesh.indices.size() / 3;
     for (std::size_t face = 0; face < stats.inputTriangles; ++face)
     {
-        const auto &material = getMaterial(face);
+        const auto& material = getMaterial(face);
         ClipVertex v[3];
         bool valid = true, missingNormal = false;
         for (int corner = 0; corner < 3; ++corner)
@@ -115,12 +115,12 @@ RenderStats DrawShaded(const Mesh &mesh, const Mat4 &model, const Camera &camera
             const auto index = mesh.indices[face * 3 + corner];
             if (index >= mesh.vertices.size())
                 throw std::invalid_argument("着色模型顶点索引越界");
-            const auto &source = mesh.vertices[index];
+            const auto& source = mesh.vertices[index];
             const auto world = model * Vec4::Position(source.position);
-            v[corner] = {mvp * Vec4::Position(source.position), {world.x, world.y, world.z},
-                         normalMatrix * source.normal, source.uv, {1, 1, 1}};
+            v[corner] = { mvp * Vec4::Position(source.position), {world.x, world.y, world.z},
+                         normalMatrix * source.normal, source.uv, {1, 1, 1} };
             valid &= v[corner].position.IsFinite() && v[corner].worldPosition.IsFinite() &&
-                     v[corner].normal.IsFinite() && source.uv.IsFinite();
+                v[corner].normal.IsFinite() && source.uv.IsFinite();
             if (valid)
                 v[corner].normal = v[corner].normal.Normalized();
             missingNormal |= v[corner].normal.LengthSquared() < 1e-16f;
@@ -138,18 +138,18 @@ RenderStats DrawShaded(const Mesh &mesh, const Mat4 &model, const Camera &camera
         }
         const auto faceNormal = cross.Normalized();
         if (missingNormal)
-            for (auto &corner : v)
+            for (auto& corner : v)
                 corner.normal = faceNormal;
         if (options.shading == ShadingMode::Flat)
         {
             const auto center = (v[0].worldPosition + v[1].worldPosition + v[2].worldPosition) / 3.f;
             const auto uv = (v[0].uv + v[1].uv + v[2].uv) / 3.f;
             const auto color = material.Evaluate(center, faceNormal, camera.eye, uv, lights);
-            for (auto &corner : v)
+            for (auto& corner : v)
                 corner.color = color;
         }
         else if (options.shading == ShadingMode::Gouraud)
-            for (auto &corner : v)
+            for (auto& corner : v)
                 corner.color = material.Evaluate(corner.worldPosition, corner.normal, camera.eye, corner.uv, lights);
 
         const auto polygon = ClipTriangleToFrustum(v[0], v[1], v[2]);

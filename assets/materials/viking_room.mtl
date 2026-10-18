@@ -1,0 +1,8 @@
+# 原模型/配套颜色图：nigelgoh，CC BY 4.0，详见资产来源文档。
+# 本 MTL 是为软件渲染器补充的经典光照系数；PNG 自带烘焙明暗。
+newmtl Texture1
+Ka 0.45 0.45 0.45
+Kd 1 1 1
+Ks 0.12 0.12 0.12
+Ns 32
+map_Kd -clamp on viking_room.png

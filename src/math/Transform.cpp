@@ -72,9 +72,12 @@ Mat4 Transform::RotationZ(float radians)
 // 为什么先缩放后旋转在平移。这个顺序换了会怎样？
 Mat4 Transform::Model(const Vec3 &translation, const Vec3 &rotationRadians, const Vec3 &scale)
 {
-
-    return Translation(translation) * RotationZ(rotationRadians.z) * RotationY(rotationRadians.y) *
-           RotationX(rotationRadians.x) * Scale(scale);
+    return Translation(translation) *
+        RotationZ(rotationRadians.z) * 
+        RotationY(rotationRadians.y) * 
+        RotationX(rotationRadians.x) * 
+        Scale(scale);     
+    // 研究 复杂的欧拉角问题  为什么 旋转先x后y后z；
 }
 
 // z=normalize(eye-target)，x=normalize(up×z)，y=z×x；各行与 eye 点积取负。
@@ -100,74 +103,52 @@ Mat4 Transform::Model(const Vec3 &translation, const Vec3 &rotationRadians, cons
 //
 //  View = R  *  T   坐标轴又有旋转 又有平移。
 
-Mat4 Transform::LookAt(const Vec3 &eye, const Vec3 &target,
-                       const Vec3 &up // up	期望的头顶方向
-)
+Mat4 Transform::LookAt(
+    const Vec3& eye,
+    const Vec3& target,
+    const Vec3& up)
 {
-    constexpr float EPSILON = 1e-6f;
+    // 1. 确定相机坐标轴
+    Vec3 forward = (target - eye).Normalized();
 
-    // 1. 计算相机 Z 轴
-    Vec3 z = eye - target;
-
-    // 检查 eye 和 target 是否重合
-    float zLength = z.Length();
-
-    if (!std::isfinite(zLength) || zLength < EPSILON)
-    {
-        throw std::invalid_argument("LookAt: eye and target cannot be the same");
-    }
-
-    z = z / zLength;
-
-    // 2. 计算相机 X 轴
-    Vec3 x = up.Cross(z);
-
-    // 检查 up 是否与 Z 轴平行
-    float xLength = x.Length();
-
-    if (!std::isfinite(xLength) || xLength < EPSILON)
-    {
-        throw std::invalid_argument("LookAt: up is parallel to viewing direction");
-    }
-
-    x = x / xLength;
-
-    // 3. 计算相机 Y 轴
+    Vec3 z = -forward;
+    Vec3 x = up.Cross(z).Normalized();
     Vec3 y = z.Cross(x);
 
-    // 4. 初始化单位矩阵
-    Mat4 result = Mat4::Identity();
+    // 2. 平移整个世界，使相机位于原点
+    Mat4 translation = Translation(-eye);
 
-    // 5. 第一行：相机 X 轴
-    result.m[0][0] = x.x;
-    result.m[0][1] = x.y;
-    result.m[0][2] = x.z;
-    result.m[0][3] = -x.Dot(eye);
+    // 3. 构造旋转矩阵
+    Mat4 rotation;
 
-    // 6. 第二行：相机 Y 轴
-    result.m[1][0] = y.x;
-    result.m[1][1] = y.y;
-    result.m[1][2] = y.z;
-    result.m[1][3] = -y.Dot(eye);
+    rotation.m[0][0] = x.x;
+    rotation.m[0][1] = x.y;
+    rotation.m[0][2] = x.z;
+    rotation.m[0][3] = 0.0f;
 
-    // 7. 第三行：相机 Z 轴
-    result.m[2][0] = z.x;
-    result.m[2][1] = z.y;
-    result.m[2][2] = z.z;
-    result.m[2][3] = -z.Dot(eye);
+    rotation.m[1][0] = y.x;
+    rotation.m[1][1] = y.y;
+    rotation.m[1][2] = y.z;
+    rotation.m[1][3] = 0.0f;
 
-    return result;
+    rotation.m[2][0] = z.x;
+    rotation.m[2][1] = z.y;
+    rotation.m[2][2] = z.z;
+    rotation.m[2][3] = 0.0f;
+
+    rotation.m[3][0] = 0.0f;
+    rotation.m[3][1] = 0.0f;
+    rotation.m[3][2] = 0.0f;
+    rotation.m[3][3] = 1.0f;
+
+    // 4. 先平移，再旋转
+    return rotation * translation;
 }
 Mat4 Transform::Perspective(float fovRadians, float aspect, float nearPlane, float farPlane)
 {
     // 1. 参数验证
     constexpr float PI = 3.14159265358979323846f;
 
-    if (!std::isfinite(fovRadians) || !std::isfinite(aspect) || !std::isfinite(nearPlane) || !std::isfinite(farPlane) ||
-        !(fovRadians > 0.0f && fovRadians < PI) || !(aspect > 0.0f) || !(nearPlane > 0.0f && nearPlane < farPlane))
-    {
-        throw std::invalid_argument("Invalid perspective parameters");
-    }
 
     // 2. FOV 缩放系数
     const float s = 1.0f / std::tan(fovRadians * 0.5f);
@@ -223,7 +204,7 @@ Mat4 Transform::Orthographic(float left, float right, float bottom, float top, f
 // 复用 Mat3::TryInverse，不另写一套求逆；平移不进入法线变换。
 // 在模型发生非均匀缩放时，保证表面法线仍然正确。
 // 这个不懂做了什么? 为什么用它/
-Mat3 Transform::NormalMatrix(const Mat4 &model)
+Mat3 Transform::NormalMatrix(const Mat4& model)
 {
     // 1. 提取 Model 左上角 3×3
     Mat3 A;
@@ -290,3 +271,4 @@ bool Transform::ToScreen(const ClipVertex &clip, int width, int height, ScreenVe
     out = candidate;
     return true;
 }
+

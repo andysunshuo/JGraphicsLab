@@ -118,19 +118,19 @@ const TextureLevel &Texture::Level(std::size_t index) const
 }
 Vec3 Texture::SampleNearest(const Vec2 &uv, std::size_t index, TextureWrap wrap) const
 {
-    const auto &level = Level(index);
+    const auto& level = Level(index);
     const auto p = AddressUV(uv, wrap);
     return Texel(level, static_cast<int>(std::floor(p.x * level.width)),
-                 static_cast<int>(std::floor((1 - p.y) * level.height)), wrap);
-}
+        static_cast<int>(std::floor((1 - p.y) * level.height)), wrap);
+}   
 Vec3 Texture::SampleBilinear(const Vec2 &uv, std::size_t index, TextureWrap wrap) const
 {
-    const auto &level = Level(index);
+    const auto& level = Level(index);
     const auto p = AddressUV(uv, wrap);
     const float s = p.x * level.width - .5f, t = (1 - p.y) * level.height - .5f;
     const int x = static_cast<int>(std::floor(s)), y = static_cast<int>(std::floor(t));
     return Vec3::Lerp(Vec3::Lerp(Texel(level, x, y, wrap), Texel(level, x + 1, y, wrap), s - x),
-                      Vec3::Lerp(Texel(level, x, y + 1, wrap), Texel(level, x + 1, y + 1, wrap), s - x), t - y);
+        Vec3::Lerp(Texel(level, x, y + 1, wrap), Texel(level, x + 1, y + 1, wrap), s - x), t - y);
 }
 Vec3 Texture::SampleTrilinear(const Vec2 &uv, float lod, TextureWrap wrap) const
 {

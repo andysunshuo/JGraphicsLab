@@ -28,7 +28,7 @@ struct TextureLevel
     std::vector<Vec3> pixels; // 行号从上到下，三通道浮点值。
 };
 
-// Texture.cpp 已实现 WIC 读图、最近邻、双线性、Mipmap 和三线性；演示默认双线性基础级。
+// Texture.cpp 保留 WIC 读图、Mipmap 和三线性；最近邻与双线性采样按补全卷填写，演示默认双线性基础级。
 class Texture
 {
   public:
